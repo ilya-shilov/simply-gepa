@@ -2,6 +2,10 @@
 
 Automatically optimize LLM prompts using a genetic algorithm with multi-objective Pareto selection.
 
+GEPA treats prompts as a population: each generation, it analyzes where the current prompt fails, mutates it into improved candidates, and keeps only the Pareto-optimal ones — balancing accuracy, false negative rate, false positive rate, and token cost simultaneously. You bring a baseline prompt and a labeled dataset; GEPA handles the rest.
+
+Works with any OpenAI-compatible API — cloud models (GPT-4o, Claude) or local inference (SGLang, vLLM, Ollama).
+
 ## Installation
 
 ```bash
