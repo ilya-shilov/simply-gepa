@@ -1,0 +1,15 @@
+{"input": {"text": "This product is amazing, I love it!"}, "expected": "positive"}
+{"input": {"text": "Terrible experience, would not recommend."}, "expected": "negative"}
+{"input": {"text": "It works fine, nothing special."}, "expected": "neutral"}
+{"input": {"text": "Best purchase I've ever made, absolutely worth the price!"}, "expected": "positive"}
+{"input": {"text": "Completely broken on arrival, waste of money."}, "expected": "negative"}
+{"input": {"text": "The delivery was on time and the package was intact."}, "expected": "neutral"}
+{"input": {"text": "I'm so happy with the quality, exceeded my expectations."}, "expected": "positive"}
+{"input": {"text": "Customer service was rude and unhelpful."}, "expected": "negative"}
+{"input": {"text": "Average product, does what it says."}, "expected": "neutral"}
+{"input": {"text": "A wonderful gift, my friend was thrilled!"}, "expected": "positive"}
+{"input": {"text": "Stopped working after two days, very disappointed."}, "expected": "negative"}
+{"input": {"text": "Standard shipping, arrived in the expected timeframe."}, "expected": "neutral"}
+{"input": {"text": "Incredible value for the price, highly recommend."}, "expected": "positive"}
+{"input": {"text": "The worst product I have ever used."}, "expected": "negative"}
+{"input": {"text": "It's okay, meets basic requirements."}, "expected": "neutral"}
