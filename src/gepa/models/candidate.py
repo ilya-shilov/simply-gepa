@@ -20,14 +20,14 @@ class PromptCandidate(BaseModel):
     def dominates(self, other: "PromptCandidate") -> bool:
         """Check if this candidate Pareto-dominates another candidate."""
         better_or_equal = (
-            self.metrics.accuracy >= other.metrics.accuracy and
+            self.metrics.macro_f1 >= other.metrics.macro_f1 and
             self.metrics.false_negative_rate <= other.metrics.false_negative_rate and
             self.metrics.false_positive_rate <= other.metrics.false_positive_rate and
             self.metrics.cost_tokens <= other.metrics.cost_tokens
         )
 
         strictly_better = (
-            self.metrics.accuracy > other.metrics.accuracy or
+            self.metrics.macro_f1 > other.metrics.macro_f1 or
             self.metrics.false_negative_rate < other.metrics.false_negative_rate or
             self.metrics.false_positive_rate < other.metrics.false_positive_rate or
             self.metrics.cost_tokens < other.metrics.cost_tokens

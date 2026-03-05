@@ -53,7 +53,7 @@ class ParetoSelector:
             sorted_frontier = sorted(
                 frontier,
                 key=lambda c: (
-                    -c.metrics.accuracy,
+                    -c.metrics.macro_f1,
                     c.metrics.false_negative_rate,
                     c.metrics.cost_tokens
                 )
@@ -66,7 +66,7 @@ class ParetoSelector:
         remaining_sorted = sorted(
             remaining,
             key=lambda c: (
-                -c.metrics.accuracy,
+                -c.metrics.macro_f1,
                 c.metrics.false_negative_rate,
                 c.metrics.cost_tokens
             )
@@ -89,7 +89,7 @@ class ParetoSelector:
 
         def score(c: PromptCandidate) -> float:
             return (
-                self.config.priority_accuracy * c.metrics.accuracy
+                self.config.priority_accuracy * c.metrics.macro_f1
                 - self.config.priority_fn_reduction * c.metrics.false_negative_rate
                 - self.config.priority_fp_reduction * c.metrics.false_positive_rate
                 - self.config.priority_cost_reduction * c.metrics.cost_tokens

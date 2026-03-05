@@ -19,6 +19,19 @@ POSITIVE_LABELS = {"true", "1", "yes"}
 NEGATIVE_LABELS = {"false", "0", "no"}
 
 
+def _compute_macro_f1(tp: int, tn: int, fp: int, fn: int) -> float:
+    """Compute macro-averaged F1 score for binary classification."""
+    p_pos = tp / (tp + fp) if (tp + fp) > 0 else 0.0
+    r_pos = tp / (tp + fn) if (tp + fn) > 0 else 0.0
+    f1_pos = 2 * p_pos * r_pos / (p_pos + r_pos) if (p_pos + r_pos) > 0 else 0.0
+
+    p_neg = tn / (tn + fn) if (tn + fn) > 0 else 0.0
+    r_neg = tn / (tn + fp) if (tn + fp) > 0 else 0.0
+    f1_neg = 2 * p_neg * r_neg / (p_neg + r_neg) if (p_neg + r_neg) > 0 else 0.0
+
+    return (f1_pos + f1_neg) / 2
+
+
 def default_compare_fn(predicted: str, expected: str) -> bool:
     """Compare predicted and expected by exact match (case-insensitive)."""
     return predicted.strip().lower() == expected.strip().lower()
@@ -73,14 +86,21 @@ class PromptEvaluator:
         false_negatives = 0
         false_positives = 0
         not_enough_count = 0
+        true_positives = 0
+        true_negatives = 0
         latencies: List[float] = []
         failed_examples: List[DatasetEntry] = []
 
         for entry, predicted, is_correct, latency_ms in results:
             latencies.append(latency_ms)
+            exp_lower = entry.expected.strip().lower()
 
             if is_correct:
                 correct += 1
+                if exp_lower in POSITIVE_LABELS:
+                    true_positives += 1
+                elif exp_lower in NEGATIVE_LABELS:
+                    true_negatives += 1
             else:
                 failed_examples.append(entry)
                 fn_fp = self._classify_error(predicted, entry.expected)
@@ -96,15 +116,19 @@ class PromptEvaluator:
         fp_rate = false_positives / total if total > 0 else 0.0
         avg_latency = sum(latencies) / len(latencies) if latencies else 0.0
         cost_tokens = self.llm.count_tokens(prompt_text) if hasattr(self.llm, "count_tokens") else len(prompt_text) // 4
+        macro_f1 = _compute_macro_f1(true_positives, true_negatives, false_positives, false_negatives)
 
         metrics = PromptMetrics(
             accuracy=accuracy,
+            macro_f1=macro_f1,
             false_negative_rate=fn_rate,
             false_positive_rate=fp_rate,
             cost_tokens=cost_tokens,
             latency_ms=avg_latency,
             total_examples=total,
             correct=correct,
+            true_positives=true_positives,
+            true_negatives=true_negatives,
             false_negatives=false_negatives,
             false_positives=false_positives,
             not_enough_count=not_enough_count
@@ -185,14 +209,22 @@ class PromptEvaluator:
         )
         cost_tokens = self.llm.count_tokens(prompt_text) if hasattr(self.llm, "count_tokens") else len(prompt_text) // 4
 
+        # Recompute macro_f1 from combined confusion matrix counts
+        true_positives = first.true_positives + second.true_positives
+        true_negatives = first.true_negatives + second.true_negatives
+        macro_f1 = _compute_macro_f1(true_positives, true_negatives, false_positives, false_negatives)
+
         return PromptMetrics(
             accuracy=accuracy,
+            macro_f1=macro_f1,
             false_negative_rate=fn_rate,
             false_positive_rate=fp_rate,
             cost_tokens=cost_tokens,
             latency_ms=latency_ms,
             total_examples=total,
             correct=correct,
+            true_positives=true_positives,
+            true_negatives=true_negatives,
             false_negatives=false_negatives,
             false_positives=false_positives,
             not_enough_count=not_enough_count
