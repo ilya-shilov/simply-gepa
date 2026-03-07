@@ -16,6 +16,10 @@ class Settings(BaseSettings):
     model: str = "default"
     temperature: float = 0.7
     base_url: Optional[str] = None
+    disable_thinking: bool = Field(
+        default=False,
+        validation_alias=AliasChoices("GEPA_DISABLE_THINKING", "disable_thinking"),
+    )
 
     model_config = SettingsConfigDict(
         env_file=".env",

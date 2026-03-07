@@ -54,6 +54,9 @@ class LLMClient(BaseLLMClient):
         if json_mode:
             kwargs["response_format"] = {"type": "json_object"}
 
+        if self.settings.disable_thinking:
+            kwargs["extra_body"] = {"chat_template_kwargs": {"enable_thinking": False}}
+
         retry_delay = INITIAL_RETRY_DELAY
 
         for attempt in range(MAX_RETRIES):
@@ -112,6 +115,9 @@ class LLMClient(BaseLLMClient):
 
         if json_mode:
             kwargs["response_format"] = {"type": "json_object"}
+
+        if self.settings.disable_thinking:
+            kwargs["extra_body"] = {"chat_template_kwargs": {"enable_thinking": False}}
 
         retry_delay = INITIAL_RETRY_DELAY
 

@@ -14,7 +14,7 @@ from .models import (
 )
 from .visualization import FileVisualizer, LiveVisualizer
 
-__version__ = "0.3.0"
+__version__ = "0.3.3"
 
 __all__ = [
     "GEPAOptimizer",

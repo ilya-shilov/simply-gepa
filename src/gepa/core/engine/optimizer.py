@@ -43,8 +43,8 @@ EvalFn = Callable[[str, Dict], Awaitable[str]]
 CompareFn = Callable[[str, str], bool]
 FailureFormatFn = Callable[[DatasetEntry], str]
 
-CONVERGENCE_WINDOW = 3
-CONVERGENCE_ACCURACY_DELTA = 0.01
+CONVERGENCE_WINDOW = 7
+CONVERGENCE_ACCURACY_DELTA = 0.005
 
 
 class GEPAOptimizer:
